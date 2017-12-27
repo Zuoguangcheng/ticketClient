@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  出发地：
+  <input type="text" id="from"> 目的地：
+  <input type="text" id="to"> 日期：
+  <input type="date" value="2017-12-29" id="date" />
+
+  <button id="btn">查询</button>
+
+
+  <table border="1" id="table">
+  </table>
+</body>
+
+<script src="./jquery-2.1.3.min.js"></script>
+
+<script>
+  var from = document.getElementById('from');
+  var to = document.getElementById('to');
+  var date = document.getElementById('date');
+  var btn = document.getElementById('btn');
+
+  var table = $(document.getElementById('table'));
+
+  btn.onclick = function () {
+    fromName = from.value;
+    toName = to.value;
+    dateName = date.value;
+
+    console.log('from', fromName);
+    console.log('to', toName);
+    console.log('date', dateName);
+
+    $.ajax({
+      url: "http://39.106.118.108/index.php",
+      type: 'GET',
+      dataType: 'json',
+      data: {
+        from: fromName,
+        to: toName,
+        date: dateName,
+      },
+      success: function (data) {
+        console.log(data)
+        showTable(data)
+      }
+    });
+  }
+  function showTable(data) {
+    table.empty();
+    th = $(
+      `<tr>
+      <th>车次</th>
+      <th>车站</th>
+      <th>时间</th>
+      <th>历时</th>
+      <th>一等</th>
+      <th>二等</th>
+      <th>软卧</th>
+      <th>硬卧</th>
+      <th>硬座</th>
+      <th>无座</th>
+    </tr>`
+    )
+    table.append(th);
+    data.forEach(element => {
+      tr = $(
+        `<tr>
+          <td>${element.station_train_code}</td>
+          <td>${element.from_station_telecode}</td>
+          <td>${element.start_time}</td>
+          <td>${element.lishi}</td>
+          <td>${element.zy_num}</td>
+          <td>${element.ze_num}</td>
+          <td>${element.rw_num}</td>
+          <td>${element.yw_num}</td>
+          <td>${element.yz_num}</td>
+          <td>${element.wz_num}</td>
+        </tr>`
+      )
+      table.append(tr);
+    });
+  }
+</script>
+
+</html>
